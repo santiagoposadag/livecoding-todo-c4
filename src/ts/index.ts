@@ -8,6 +8,8 @@ interface noteI{
   date:string
 }
 
+let state:noteI[] = []
+
 form?.addEventListener('submit', (e) => handleSubmit(e))
 
 function handleSubmit(e:SubmitEvent){
@@ -25,9 +27,11 @@ function handleSubmit(e:SubmitEvent){
       date: date.toISOString()
     }
 
+    state.push(newNote)
+
     createReminder(newNote);  
     titleInput.value = '';
-    reminderInput.value = ''
+    reminderInput.value = '';
   }
 }
 
@@ -50,6 +54,19 @@ function createReminder(note:noteI){
   dateP.className = 'single-note-date'
   dateP.innerText = note.date
 
-  div.append(h2, reminderP, dateP)
+  const button:HTMLButtonElement = document.createElement('button')
+  button.className = 'single-note-delete-button'
+  button.innerText = 'X'
+  button.addEventListener('click', ()=> handleDelete(div))
+
+  div.append(h2, reminderP, dateP, button)
   notesContainer.append(div)
 }
+
+function handleDelete(div:HTMLDivElement){
+  div.remove()
+  const id:string = div.classList[1].split('-')[1]
+  const newSate = state.filter(note => note.id !== parseInt(id))
+  state = newSate
+}
+

@@ -1,5 +1,6 @@
 "use strict";
 const form = document.querySelector('.reminders-form');
+let state = [];
 form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) => handleSubmit(e));
 function handleSubmit(e) {
     e.preventDefault();
@@ -14,6 +15,7 @@ function handleSubmit(e) {
             reminder: reminderInput.value,
             date: date.toISOString()
         };
+        state.push(newNote);
         createReminder(newNote);
         titleInput.value = '';
         reminderInput.value = '';
@@ -33,6 +35,16 @@ function createReminder(note) {
     const dateP = document.createElement('p');
     dateP.className = 'single-note-date';
     dateP.innerText = note.date;
-    div.append(h2, reminderP, dateP);
+    const button = document.createElement('button');
+    button.className = 'single-note-delete-button';
+    button.innerText = 'X';
+    button.addEventListener('click', () => handleDelete(div));
+    div.append(h2, reminderP, dateP, button);
     notesContainer.append(div);
+}
+function handleDelete(div) {
+    div.remove();
+    const id = div.classList[1].split('-')[1];
+    const newSate = state.filter(note => note.id !== parseInt(id));
+    state = newSate;
 }
